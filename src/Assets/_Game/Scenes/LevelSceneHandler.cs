@@ -1,4 +1,6 @@
 using System;
+using Core.Mediators;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,8 +9,18 @@ public class LevelSceneHandler : MonoBehaviour
     private bool isPaused = false;
     
     [SerializeField]
-    private GameObject pauseMenuUI;
+    private TextMeshProUGUI _scoreText;
     
+    [SerializeField]
+    private GameObject pauseMenuUI;
+
+    private IMessenger _messenger;
+    
+    private void Awake()
+    {
+        _messenger = Game.Container.Resolve<IMessenger>();
+    }
+
     public void WinGame()
     {
         SceneManager.LoadSceneAsync(2);
