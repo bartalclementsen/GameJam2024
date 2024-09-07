@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Loggers;
@@ -9,8 +10,17 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     private Vector2 movement;
+    private Vector2 rotate;
     public InputAction lookInput;
     private ILogger _logger;
+    PlayerControls _playerControls;
+
+    private void Awake()
+    {
+        _playerControls = new PlayerControls();
+        _playerControls.Gameplay.Rotate.performed += ctx => rotate = ctx.ReadValue<Vector2>();
+        _playerControls.Gameplay.Rotate.canceled += ctx => rotate = Vector2.zero;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,10 +35,11 @@ public class PlayerMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+
         
-        System.Numerics.Vector2 test = lookInput.ReadValue<System.Numerics.Vector2>();
-        _logger.Log(test.X*100);
-        _logger.Log(test.Y*100);
+        _logger.Log(rotate);
+        Vector2 r = new Vector2(rotate.x, rotate.y) * 100f * Time.deltaTime;
+        transform.Rotate(r, Space.World);
         _logger.Log("-----------------");
 
         // Normalize the vector to prevent faster diagonal movement
