@@ -19,7 +19,6 @@ public class SpearDamage : MonoBehaviour
     {
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
-        _logger.Log("started!!!!");
     }
 
     // Update is called once per frame
@@ -30,7 +29,6 @@ public class SpearDamage : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        _logger.Log("Attacked!!!!");
         if (collision.CompareTag("Enemy"))
         {
             // Deal damage to the enemy
