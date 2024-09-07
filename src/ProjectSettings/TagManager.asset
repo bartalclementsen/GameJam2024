@@ -42,6 +42,9 @@ TagManager:
   - name: Background
     uniqueID: 3727100965
     locked: 0
+  - name: Corpse
+    uniqueID: 1757725483
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

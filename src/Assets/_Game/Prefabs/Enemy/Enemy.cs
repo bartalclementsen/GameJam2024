@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Loggers;
+using Core.Mediators;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,7 +11,7 @@ using ILogger = Core.Loggers.ILogger;
 
 public class Enemy : MonoBehaviour
 {
-    public float Speed = 40f;  // Enemy's movement speed
+    public float Speed = 2f;  // Enemy's movement speed
     public float StoppingDistance = 0f; // Minimum distance to stop near the player
     
     private ILogger _logger;
@@ -19,7 +21,7 @@ public class Enemy : MonoBehaviour
     private Collider2D _col;
     private SpriteRenderer _spriteRenderer;
     private SpriteRenderer _spriteRenderer_dead;
-    
+    private IMessenger _messenger;
     
     // Start is called before the first frame update
     void Start()
@@ -27,15 +29,16 @@ public class Enemy : MonoBehaviour
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
         
+        _messenger = Game.Container.Resolve<IMessenger>();
+        
         _player = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault();
         _rb2D = GetComponent<Rigidbody2D>();
         _col = GetComponent<Collider2D>();
         _spriteRenderer = GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(sr => sr.enabled);
         _spriteRenderer_dead = GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(sr => sr.enabled == false);
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void FixedUpdate()
     {
         // Calculate the distance to the player
         float distance = Vector2.Distance(transform.position, _player.transform.position);
@@ -59,5 +62,7 @@ public class Enemy : MonoBehaviour
         _rb2D.bodyType = RigidbodyType2D.Static;
         _spriteRenderer.enabled = false;
         _spriteRenderer_dead.enabled = true;
+        
+        _messenger.Publish(new EnemyKilledMessage(this));
     }
 }
