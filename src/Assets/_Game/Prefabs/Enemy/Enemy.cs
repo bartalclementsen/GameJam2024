@@ -12,7 +12,7 @@ using Random = System.Random;
 
 public class Enemy : MonoBehaviour
 {
-    public float Speed = 2f;  // Enemy's movement speed
+    private float Speed = new Random().Next(3, 6);  // Enemy's movement speed
     public float StoppingDistance = 0f; // Minimum distance to stop near the player
     
     [SerializeField]
@@ -21,8 +21,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private AudioSource _audioSource;
     
+    public bool IsDead { get; set; } = false;
+    
     private ILogger _logger;
-    private bool _isDead = false;
     private GameObject _player;  // Reference to the player's position
     private Rigidbody2D _rb2D;
     private Collider2D _col;
@@ -53,7 +54,7 @@ public class Enemy : MonoBehaviour
         float distance = Vector2.Distance(transform.position, _player.transform.position);
 
         // Move toward the player if the distance is greater than the stoppingDistance
-        if (distance > StoppingDistance && _isDead == false)
+        if (distance > StoppingDistance && IsDead == false)
         {
             Vector2 direction = (_player.transform.position - transform.position).normalized;
 
@@ -64,9 +65,9 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int num)
     {
-        if (_isDead) return;
+        if (IsDead) return;
         
-        _isDead = true;
+        IsDead = true;
         _col.enabled = false;
         _rb2D.bodyType = RigidbodyType2D.Static;
         _spriteRenderer.enabled = false;
@@ -74,6 +75,15 @@ public class Enemy : MonoBehaviour
         
         _messenger.Publish(new EnemyKilledMessage(this));
         PlayRandomDamageSound();
+    }
+
+    public void Undead()
+    {
+        IsDead = false;
+        _col.enabled = enabled;
+        _rb2D.bodyType = RigidbodyType2D.Dynamic;
+        _spriteRenderer.enabled = true;
+        _spriteRenderer_dead.enabled = false;
     }
     
     private void PlayRandomDamageSound()

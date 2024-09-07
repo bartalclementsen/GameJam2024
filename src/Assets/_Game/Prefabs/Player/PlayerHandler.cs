@@ -87,7 +87,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         // Trigger attack on button press (left mouse button)
-        if (Input.GetAxis("RT") == 1f & !isAttacking)
+        if ((Input.GetAxis("RT") == 1f | Input.GetButtonDown("Fire1")) & !isAttacking)
         {
             isAttacking = true;
         }
