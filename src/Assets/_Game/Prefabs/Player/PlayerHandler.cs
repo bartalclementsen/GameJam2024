@@ -14,7 +14,7 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField] private float rotationSpeed = 10f;
 
-    [SerializeField] private GameObject spear; // Assign the spear GameObject in the inspector
+    [SerializeField] private SpearHandler spear; // Assign the spear GameObject in the inspector
     
     [SerializeField] private float attackDistance = 1.5f; // How far the spear moves forward
     
@@ -130,6 +130,7 @@ public class PlayerScript : MonoBehaviour
         // Move spear forward if spearForward is true, otherwise move back
         if (spearForward)
         {
+            spear.IsDeadly = true;
             // Move the spear forward in local space
             spear.transform.localPosition = Vector3.MoveTowards(
                 spear.transform.localPosition,
@@ -146,6 +147,7 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
+            spear.IsDeadly = false;
             // Move the spear back to its original position
             spear.transform.localPosition = Vector3.MoveTowards(
                 spear.transform.localPosition,
@@ -164,19 +166,26 @@ public class PlayerScript : MonoBehaviour
     
     private void OnTriggerStay2D(Collider2D collision)
     {
-        Enemy enemyCollider = collision.GetComponent<Enemy>();
-        if ( enemyCollider is not null)
+        if (collision.CompareTag("Enemy"))
         {
-            isInDanger = true;
+            Enemy enemyCollider = collision.GetComponent<Enemy>();
+            if ( enemyCollider is not null)
+            {
+                isInDanger = true;
+            }    
         }
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Enemy enemyCollider = other.GetComponent<Enemy>();
-        if ( enemyCollider is not null)
+        if (other.CompareTag("Enemy"))
         {
-            isInDanger = false;
+            Enemy enemyCollider = other.GetComponent<Enemy>();
+            if ( enemyCollider is not null)
+            {
+                isInDanger = false;
+            }    
         }
     }
 }

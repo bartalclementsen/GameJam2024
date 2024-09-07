@@ -6,14 +6,17 @@ using ILogger = Core.Loggers.ILogger;
 
 public class SpearHandler : MonoBehaviour
 {
-    ILogger _logger;
+    public bool IsDeadly { get; set; }
+    
+    private ILogger _logger;
     
     public SpearHandler()
     {
         
         //_logger.Log("cons!!!!");
-    } 
-    
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +32,7 @@ public class SpearHandler : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (IsDeadly && collision.CompareTag("Enemy"))
         {
             // Deal damage to the enemy
             Enemy enemy = collision.GetComponent<Enemy>();
