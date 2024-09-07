@@ -8,11 +8,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using ILogger = Core.Loggers.ILogger;
+using Random = System.Random;
 
 public class Enemy : MonoBehaviour
 {
     public float Speed = 2f;  // Enemy's movement speed
     public float StoppingDistance = 0f; // Minimum distance to stop near the player
+    
+    [SerializeField]
+    private AudioClip[] _damageSounds;
+    
+    [SerializeField]
+    private AudioSource _audioSource;
     
     private ILogger _logger;
     private bool _isDead = false;
@@ -22,6 +29,8 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private SpriteRenderer _spriteRenderer_dead;
     private IMessenger _messenger;
+
+    private Random _random = new Random();
     
     // Start is called before the first frame update
     void Start()
@@ -64,5 +73,19 @@ public class Enemy : MonoBehaviour
         _spriteRenderer_dead.enabled = true;
         
         _messenger.Publish(new EnemyKilledMessage(this));
+        PlayRandomDamageSound();
+    }
+    
+    private void PlayRandomDamageSound()
+    {
+        if (_audioSource.isPlaying)
+        {
+            return;
+        }
+        
+        _audioSource.clip = _damageSounds[_random.Next(_damageSounds.Length)];
+        _audioSource.Play();
+        _audioSource.volume = 0.8f + (float)(0.2f * _random.NextDouble());
+        _audioSource.volume = 0.8f + (float)(0.4f * _random.NextDouble());
     }
 }

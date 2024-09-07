@@ -7,6 +7,7 @@ using Core.Mediators;
 using Unity.VisualScripting;
 using UnityEngine;
 using ILogger = Core.Loggers.ILogger;
+using Random = System.Random;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -18,7 +19,9 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField] private float attackDistance = 1.5f; // How far the spear moves forward
     
-    [SerializeField] private float attackSpeed = 10f; // Speed of spear thrust
+    [SerializeField] private float attackSpeed = 12f;
+    
+    [SerializeField] private float attackRetractionSpeed = 2f; // Speed of spear thrust
     
     [SerializeField] private float attackDuration = 0.2f;
     
@@ -26,8 +29,13 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField] private Transform _modelTransform;
     
+    [SerializeField] private AudioClip[] _weaponSwingAudioClip;
+    
+    [SerializeField] private AudioSource _weaponAudioSource;
+    
     public int CurrentHitPonts { get; set; } = 5;
 
+    private Random _random = new Random();
     private ILogger _logger;
     private Vector2 movement;
     private Vector2 aimInput;
@@ -39,7 +47,8 @@ public class PlayerScript : MonoBehaviour
     private float attackTime;
     private bool isInDanger = false;
     private IMessenger _messenger;
-
+        
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -130,6 +139,7 @@ public class PlayerScript : MonoBehaviour
         // Move spear forward if spearForward is true, otherwise move back
         if (spearForward)
         {
+            PlayRandomWeaponSwingAudio();
             spear.IsDeadly = true;
             // Move the spear forward in local space
             spear.transform.localPosition = Vector3.MoveTowards(
@@ -152,12 +162,13 @@ public class PlayerScript : MonoBehaviour
             spear.transform.localPosition = Vector3.MoveTowards(
                 spear.transform.localPosition,
                 initialSpearPosition,
-                attackSpeed * Time.deltaTime
+                attackRetractionSpeed * Time.deltaTime
             );
 
             // Check if the spear has returned to its initial position
             if (Vector3.Distance(spear.transform.localPosition, initialSpearPosition) < 0.1f)
             {
+                _weaponAudioSource.Stop();
                 spearForward = true; // Ready for the next attack
                 isAttacking = false; // Attack sequence ends
             }
@@ -187,5 +198,19 @@ public class PlayerScript : MonoBehaviour
                 isInDanger = false;
             }    
         }
+    }
+
+    private void PlayRandomWeaponSwingAudio()
+    {
+        if (_weaponAudioSource.isPlaying)
+        {
+            return;
+        }
+
+        _weaponAudioSource.clip = _weaponSwingAudioClip[_random.Next(_weaponSwingAudioClip.Length)];
+        _weaponAudioSource.Play();
+
+        _weaponAudioSource.volume = 0.05f + (float)(0.1 * _random.NextDouble());
+        _weaponAudioSource.pitch = 0.7f + (float)(0.3 * _random.NextDouble());
     }
 }
