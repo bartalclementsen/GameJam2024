@@ -29,6 +29,7 @@ public class EnemySpawnHandler : MonoBehaviour
     private int _killCount = 0;
     private int _howManyEnemiesToSpawn = 5;
     private DateTime _lastSpawnTime;
+    private GameObject _player;
     
     private IMessenger _messenger;
     private IDisposable _subscription;
@@ -37,6 +38,8 @@ public class EnemySpawnHandler : MonoBehaviour
     {
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
+        
+        _player = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault();
         
         //InvokeRepeating("SpawnRandomPipe", 2, spawnRate);
         _messenger = Game.Container.Resolve<IMessenger>();
@@ -59,17 +62,30 @@ public class EnemySpawnHandler : MonoBehaviour
     {
         for (int i = 0; i < _howManyEnemiesToSpawn; i++)
         {
-            float spawnPosX = 0;
-            float spawnPosY = 0;
-            spawnPosX = UnityEngine.Random.Range(spawnMinPosX, spawnMaxPosX);
-            spawnPosY = UnityEngine.Random.Range(spawnMaxPosY, spawnMinPosY);
-
-            Vector3 spawnPos = new Vector3(spawnPosX, spawnPosY, 0);
+            Vector3 spawnPos = getSpawnPos(); 
             Quaternion spawnRotation = new Quaternion(0, 0, 0, 0);
             Instantiate(pipePrefab, spawnPos, spawnRotation);
             _spawnCount++;
             _howManyEnemiesToSpawn = CalcHowManyEnemiesToSpawn();
         }
+    }
+
+    private Vector3 getSpawnPos()
+    {
+        float spawnPosX = 0;
+        float spawnPosY = 0;
+        float distance = 0f;
+        Vector3 spawnPos = Vector3.zero;
+
+        while (distance < 10f || spawnPos == Vector3.zero)
+        {
+            spawnPosX = UnityEngine.Random.Range(spawnMinPosX, spawnMaxPosX);
+            spawnPosY = UnityEngine.Random.Range(spawnMaxPosY, spawnMinPosY);
+            spawnPos = new Vector3(spawnPosX, spawnPosY, 0);
+            distance = Vector3.Distance(spawnPos, _player.transform.position);
+        }
+        
+        return spawnPos;
     }
 
     private int CalcHowManyEnemiesToSpawn()
