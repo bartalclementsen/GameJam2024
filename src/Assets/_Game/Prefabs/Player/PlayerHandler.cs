@@ -29,7 +29,7 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField] private float timeBeingPushed = 0.5f;
     
-    [SerializeField] private int pushStrength = 10;
+    [SerializeField] private int pushStrength = 1000;
     
     [SerializeField] private AudioClip movementAudioClip;
     
@@ -141,10 +141,7 @@ public class PlayerScript : MonoBehaviour
     void FixedUpdate()
     {
         Vector2 movement2 = movement.normalized * (moveSpeed * Time.fixedDeltaTime);
-        if (_isBeingPushed == false)
-        {
-            rb.MovePosition(rb.position + movement2);
-        }
+        rb.AddForce(movement2);
         
         bool isMoving = movement2 != Vector2.zero;
         
@@ -159,14 +156,6 @@ public class PlayerScript : MonoBehaviour
         
         if (isInDanger && _lastDamageTakeTime + 1 < Time.time)
         {
-            Vector2 direction = ((Vector2)transform.position - _attackedFrom).normalized;
-            rb.velocity = direction * pushStrength;
-            rb.mass = 100;
-
-            _pushedTime = DateTime.Now;
-            _isBeingPushed = true;
-            _attackedFrom = Vector2.zero;
-            
             isInDanger = false;
             _lastDamageTakeTime = Time.time;
             CurrentHitPonts--;
@@ -178,12 +167,6 @@ public class PlayerScript : MonoBehaviour
                 // DIE
                 _logger.Log("DIE");
             }
-        }
-
-        if (_isBeingPushed && DateTime.Now.AddSeconds(-timeBeingPushed) > _pushedTime)
-        {
-            _isBeingPushed = false;
-            rb.velocity = Vector2.zero;
         }
     }
 
@@ -238,11 +221,12 @@ public class PlayerScript : MonoBehaviour
             if ( enemyCollider is not null)
             {
                 isInDanger = true;
+                
+                Vector2 direction = ((Vector2)transform.position - (Vector2)enemyCollider.transform.position).normalized;
+                rb.AddForce(direction * pushStrength);
 
-                if (_attackedFrom == Vector2.zero)
-                {
-                    _attackedFrom = enemyCollider.transform.position;
-                }
+                _pushedTime = DateTime.Now;
+                _attackedFrom = Vector2.zero;
             }    
         }
         

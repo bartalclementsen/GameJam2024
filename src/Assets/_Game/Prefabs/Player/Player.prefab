@@ -390,7 +390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 881495249421349e48d3c5d00b2175e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 5000
   rotationSpeed: 10
   spear: {fileID: 4250251664758241884}
   attackDistance: 1.5
@@ -398,7 +398,7 @@ MonoBehaviour:
   attackRetractionSpeed: 2
   attackDuration: 0.2
   timeBeingPushed: 0.5
-  pushStrength: 10
+  pushStrength: 3500
   movementAudioClip: {fileID: 8300000, guid: 951e7c5abcc6b4656b1344c3e084f10a, type: 3}
   _modelTransform: {fileID: 1399409296241703519}
   _weaponSwingAudioClip:
@@ -417,7 +417,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 10
-  m_LinearDrag: 0
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
