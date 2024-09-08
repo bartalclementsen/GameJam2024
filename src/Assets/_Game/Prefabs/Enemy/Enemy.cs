@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour
     private bool _topTextShown = false;
     private void TryPlayBarSound()
     {
-        if (_barAudioSource.isPlaying || Time.time - _lastBarTime < _nextBarIn)
+        if (IsDead || _barAudioSource.isPlaying || Time.time - _lastBarTime < _nextBarIn)
         {
             return;
         }
