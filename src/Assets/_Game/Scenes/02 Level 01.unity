@@ -1838,10 +1838,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7999073641186178022, guid: dc20a01affe4d4f7a9f6743b7b4352de, type: 3}
-      propertyPath: m_LinearDrag
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 9022557132399443107, guid: dc20a01affe4d4f7a9f6743b7b4352de, type: 3}
       propertyPath: m_Name
       value: Player
@@ -2330,7 +2326,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e3480a6335b824320b54eb808aa03d8c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 0.6
   m_Pitch: 1
   Loop: 1
   Mute: 0
