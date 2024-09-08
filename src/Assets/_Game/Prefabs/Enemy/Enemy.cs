@@ -87,7 +87,14 @@ public class Enemy : MonoBehaviour
 
     public void EnemyBarSounds()
     {
+        // Generate a random number between 0 and 100
+        int chance = _random.Next(0, 100);
+    
+        // 2% chance to play the bar sound
+        if (chance < 2)
+        {
         PlayRandomCharacterSound(_barSounds);
+        }
     }
 
     public void Undead()
