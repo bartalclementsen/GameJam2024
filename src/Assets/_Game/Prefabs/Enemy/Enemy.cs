@@ -36,6 +36,9 @@ public class Enemy : MonoBehaviour
     private IMessenger _messenger;
 
     private Random _random = new Random();
+
+    private float _barSoundCooldown = 10f;  // Cooldown time in seconds
+    private float _barSoundTimer = 0f;
     
     // Start is called before the first frame update
     void Start()
@@ -68,6 +71,10 @@ public class Enemy : MonoBehaviour
             _rb2D.MovePosition((Vector2)transform.position + direction * Speed * Time.deltaTime);
         }
         
+        // Update the bar sound cooldown timer
+        _barSoundTimer -= Time.deltaTime;
+        
+        // Call EnemyBarSounds to potentially play a sound
         EnemyBarSounds();
     }
 
@@ -87,13 +94,18 @@ public class Enemy : MonoBehaviour
 
     public void EnemyBarSounds()
     {
-        // Generate a random number between 0 and 100
-        int chance = _random.Next(0, 100);
-    
-        // 2% chance to play the bar sound
-        if (chance < 2)
+        // Check if cooldown period has elapsed
+        if (_barSoundTimer <= 0f)
         {
-        PlayRandomCharacterSound(_barSounds);
+            // Generate a random number between 0 and 100
+            int chance = _random.Next(0, 100);
+        
+            // 0.5% chance to play the bar sound
+            if (chance < 0.5)
+            {
+                PlayRandomCharacterSound(_barSounds);
+                _barSoundTimer = _barSoundCooldown;  // Reset the cooldown timer
+            }
         }
     }
 
