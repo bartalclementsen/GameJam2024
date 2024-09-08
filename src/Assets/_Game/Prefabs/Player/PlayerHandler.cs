@@ -6,8 +6,10 @@ using Core.Loggers;
 using Core.Mediators;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using ILogger = Core.Loggers.ILogger;
 using Random = System.Random;
+
 
 public class PlayerScript : MonoBehaviour
 {
@@ -41,7 +43,7 @@ public class PlayerScript : MonoBehaviour
 
     private Random _random = new Random();
     private ILogger _logger;
-    private Vector2 movement;
+    private Vector2 movement = Vector2.zero;
     private Vector2 aimInput;
     private Rigidbody2D rb;
     private Vector3 initialSpearPosition;
@@ -55,10 +57,35 @@ public class PlayerScript : MonoBehaviour
     
     private bool _isBeingPushed = false;
     private IMessenger _messenger;
-        
+    
+    private PlayerControls _playerControls;
+    private InputAction move;
+    private InputAction look;
+    private InputAction fire;
+    
+
+    private void OnEnable()
+    {
+        move = _playerControls.Player.Move;
+        look = _playerControls.Player.Look;
+        fire = _playerControls.Player.Fire;
+        move.Enable();
+        fire.Enable();
+        look.Enable();
+
+        fire.performed += Fire;
+    }
+
+    private void OnDisable()
+    {
+        move.Disable();
+        fire.Disable();
+        look.Disable();
+    }
     
     private void Awake()
     {
+        _playerControls = new PlayerControls();
         rb = GetComponent<Rigidbody2D>();
 
         audioSource = GetComponent<AudioSource>();
@@ -79,32 +106,36 @@ public class PlayerScript : MonoBehaviour
     
     void Update()
     {
-        movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        aimInput = new Vector2(Input.GetAxis("RightStickHorizontal"), Input.GetAxis("RightStickVertical"));
-
+        movement = move.ReadValue<Vector2>();
+        aimInput = look.ReadValue<Vector2>();
+        
         // Handle aiming
         if (aimInput.magnitude > 0.1f)
         {
             // Calculate target rotation angle
-            float targetAngle = Mathf.Atan2(aimInput.y, aimInput.x) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(aimInput.x, aimInput.y) * Mathf.Rad2Deg;
             Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
 
             // Smoothly rotate towards the target rotation
             _modelTransform.rotation =
                 Quaternion.Slerp(_modelTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
-
-        // Trigger attack on button press (left mouse button)
-        if ((Input.GetAxis("RT") == 1f | Input.GetButtonDown("Fire1")) & !isAttacking)
-        {
-            isAttacking = true;
-        }
-
-        // If attacking, count down the attack duration
+        
         if (isAttacking)
         {
             MoveSpear();
         }
+    }
+    
+    
+
+    private void Fire(InputAction.CallbackContext context)
+    {
+        if (isAttacking)
+        {
+            return;
+        }
+        isAttacking = true;
     }
 
     void FixedUpdate()

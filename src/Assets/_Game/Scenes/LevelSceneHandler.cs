@@ -2,7 +2,10 @@ using System;
 using Core.Mediators;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelSceneHandler : MonoBehaviour
 {
@@ -15,6 +18,21 @@ public class LevelSceneHandler : MonoBehaviour
     private TextMeshProUGUI _hitPointsText;
     
     [SerializeField]
+    private GameObject _finishedMenu;
+    
+    [SerializeField]
+    private TextMeshProUGUI _finishedKilldText;
+    
+    [SerializeField]
+    private TextMeshProUGUI _finishedTimeText;
+    
+    [SerializeField]
+    private GameObject retryButton;
+    
+    [SerializeField]
+    private EventSystem eventSystem;
+    
+    [SerializeField]
     private GameObject pauseMenuUI;
 
     private IMessenger _messenger;
@@ -23,6 +41,54 @@ public class LevelSceneHandler : MonoBehaviour
 
     private int totalKills = 0;
     private DateTime _timeStart;
+    private PlayerControls _playerControls;
+    private InputAction navigate;
+    private InputAction click;
+    private bool isDead = false;
+
+    private void ShowFinishedScreen()
+    {
+        _finishedMenu.SetActive(true);
+        eventSystem.SetSelectedGameObject(retryButton);
+        
+        var timeElapsed = (DateTime.Now - _timeStart);
+        
+        _finishedKilldText.text = totalKills + " kills";
+        _finishedTimeText.text =
+            ((int)timeElapsed.TotalMinutes).ToString("00") + ":" + timeElapsed.Seconds.ToString("00");
+        
+        Time.timeScale = 0;
+    }
+
+    private void OnEnable()
+    {
+        click = _playerControls.UI.Pause;
+        navigate = _playerControls.UI.Navigate;
+        navigate.Enable();
+        click.Enable();
+        
+        click.performed += context =>
+        {
+            TryToPauseGame();
+        };
+    }
+
+    private void OnDisable()
+    {
+        navigate.Disable();
+        click.Disable();
+    }
+
+    private void Awake()
+    {
+        _playerControls = new PlayerControls();
+    }
+
+    private void OnDestroy()
+    {
+        _subscription.Dispose();
+        _subscription2.Dispose();
+    }
 
     private void Start()
     {
@@ -40,7 +106,8 @@ public class LevelSceneHandler : MonoBehaviour
             _hitPointsText.text = "HP " + Math.Max(0, m.PlayerHandler.CurrentHitPonts) + "/" + 5;
             if (m.PlayerHandler.CurrentHitPonts < 1)
             {
-                LooseGame();  
+                isDead = true;
+                ShowFinishedScreen();
             }
         });
         
@@ -59,14 +126,6 @@ public class LevelSceneHandler : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            TryToPauseGame();
-        }
-    }
-
     public void ContinueGame()
     {
         TryToPauseGame();
@@ -74,13 +133,13 @@ public class LevelSceneHandler : MonoBehaviour
     
     public void RetryGame()
     {
-        SceneManager.LoadScene(1);
         Time.timeScale = 1;
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
     
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
         Time.timeScale = 1;
     }
 
@@ -104,7 +163,10 @@ public class LevelSceneHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        UpdateScoreText();
+        if (isDead == false)
+        {
+            UpdateScoreText();    
+        }
     }
 
     private void UpdateScoreText()
