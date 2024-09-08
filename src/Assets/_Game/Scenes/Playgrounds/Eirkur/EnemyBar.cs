@@ -99,4 +99,27 @@ public class EnemyBar : MonoBehaviour
         _audioSource.volume = 0.8f + (float)(0.2f * _random.NextDouble());
         _audioSource.volume = 0.8f + (float)(0.4f * _random.NextDouble());
     }
+
+    private void PlayRandomBarSounds()
+    {
+        if (_audioSource.isPlaying)
+        {
+            return;
+        }
+
+        _audioSource.clip = _barSounds[_random.Next(_barSounds.Length)];
+        _audioSource.Play();
+    }
+
+    // Calculate the distance to the player
+    private void AdjustVolumeBasedOnDistance()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+
+        // Calculate volume based on distance (closer to the player means louder)
+        float volume = Mathf.Clamp01(1 - ((distanceToPlayer - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance)));
+
+        // Set the audio volume, ensuring it's between 0 and 1
+        _audioSource.volume = Mathf.Clamp(volume, 0f, 1f);
+    }
 }
