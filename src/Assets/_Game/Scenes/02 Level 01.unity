@@ -2282,8 +2282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c584c83bd500747c282c64fabcfe2b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highScoreNameField: {fileID: 1797078525}
-  _highScoreSubmitButton: {fileID: 250750171}
+  _highScoreNameField: {fileID: 0}
+  _highScoreSubmitButton: {fileID: 0}
   _scoreText: {fileID: 1321619418}
   _hitPointsText: {fileID: 1309324417}
   _finishedMenu: {fileID: 81841601}
@@ -2292,13 +2292,11 @@ MonoBehaviour:
   retryButton: {fileID: 493813759}
   eventSystem: {fileID: 699801921}
   pauseMenuUI: {fileID: 1291234505}
-  crowdAudioSource: {fileID: 1078780664}
-  crowdSwellAudioSource: {fileID: 1078780663}
-  crowdSwellAudioClips:
-  - {fileID: 8300000, guid: d10e15e54cf8ed64096b64ebe549aa60, type: 3}
-  - {fileID: 8300000, guid: 275e4958d2af640619988a70b27ac651, type: 3}
-  mainAudioSource: {fileID: 1078780661}
-  themeMusic: {fileID: 8300000, guid: b4251fe4735c8485ea13b41d4236005a, type: 3}
+  crowdAudioSource: {fileID: 0}
+  crowdSwellAudioSource: {fileID: 0}
+  crowdSwellAudioClips: []
+  mainAudioSource: {fileID: 0}
+  themeMusic: {fileID: 0}
 --- !u!4 &1078780660
 Transform:
   m_ObjectHideFlags: 0
@@ -2422,7 +2420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030501bee2742447d847e3814d691b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxEnemies: 100
+  MaxEnemies: 1000
   pipePrefab: {fileID: 6802321494003925350, guid: 40b272baa9f1a44b5b595c548770bf79, type: 3}
   spawnRate: 5
   spawnMaxPosX: 30

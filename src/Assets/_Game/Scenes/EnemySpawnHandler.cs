@@ -10,7 +10,7 @@ using ILogger = Core.Loggers.ILogger;
 public class EnemySpawnHandler : MonoBehaviour
 {
     [SerializeField]
-    private int MaxEnemies = 100;
+    private int MaxEnemies = 1000;
     [SerializeField]
     private GameObject pipePrefab;
     [SerializeField]
