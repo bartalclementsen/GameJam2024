@@ -28,7 +28,12 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private int pushStrength = 10;
     
+    [SerializeField]
+    public int CurrentHitPonts { get; set; } = 2;
+    
     public bool IsDead { get; set; } = false;
+    
+    private DateTime _lastHitTime;
     
     private Vector2 _attackedFrom = Vector2.zero;
     private DateTime _pushedTime = DateTime.Now;
@@ -71,6 +76,7 @@ public class Enemy : MonoBehaviour
         Speed = 1000f + (float)(2000f * random.NextDouble());
         _rb2D.mass = 10f;
         transform.localScale = new Vector3(2f, 2f, 2f);
+        CurrentHitPonts = 4;
     }
 
     private void FixedUpdate()
@@ -104,8 +110,10 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(Vector2 playerPosition)
     {
         if (IsDead) return;
+        if (_lastHitTime.AddSeconds(1) > DateTime.Now) return;
         
-        IsDead = true;
+        CurrentHitPonts--;
+        _lastHitTime = DateTime.Now;
         
         Vector2 direction = ((Vector2)transform.position - playerPosition).normalized;
         _rb2D.AddForce(direction * pushStrength * _rb2D.mass);
@@ -115,6 +123,11 @@ public class Enemy : MonoBehaviour
         
         _messenger.Publish(new EnemyKilledMessage(this));
         PlayRandomDamageSound();
+
+        if (CurrentHitPonts < 1)
+        {
+            IsDead = true;
+        }
     }
 
     public void Undead()
