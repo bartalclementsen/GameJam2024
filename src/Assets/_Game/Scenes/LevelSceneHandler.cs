@@ -1,4 +1,5 @@
 using System;
+using _Game;
 using Core.Mediators;
 using TMPro;
 using UnityEngine;
@@ -6,10 +7,33 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class LevelSceneHandler : MonoBehaviour
 {
     private bool isPaused = false;
+
+    public void SubmitHighScore()
+    {
+        string name = _highScoreNameField.text;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "Unknown";
+        }
+        
+        var timeElapsed = (DateTime.Now - _timeStart);
+        highScoreService.AddHighScore(name, totalKills, timeElapsed);
+        
+        _highScoreNameField.gameObject.SetActive(false);
+        _highScoreSubmitButton.SetActive(false);
+    }
+    
+    [SerializeField]
+    private TMP_InputField _highScoreNameField;
+    
+    
+    [SerializeField]
+    private GameObject _highScoreSubmitButton;
     
     [SerializeField]
     private TextMeshProUGUI _scoreText;
@@ -35,6 +59,39 @@ public class LevelSceneHandler : MonoBehaviour
     [SerializeField]
     private GameObject pauseMenuUI;
 
+    [SerializeField]
+    private AudioSource crowdAudioSource;
+    
+    [SerializeField]
+    private AudioSource crowdSwellAudioSource;
+    
+    [SerializeField]
+    private AudioClip[] crowdSwellAudioClips;
+    
+    [SerializeField]
+    private AudioSource mainAudioSource;
+    
+    [SerializeField]
+    private AudioClip themeMusic;
+
+    private void TryPlayRandomCrowCheer()
+    {
+        if (Time.time - lastKillTime < 1.0f || random.Next(10) != 0)
+        {
+            return;
+        }
+        
+        if (crowdSwellAudioSource.isPlaying)
+        {
+            return;
+        }
+        
+        var clip = crowdSwellAudioClips[random.Next(crowdSwellAudioClips.Length)];
+        crowdSwellAudioSource.clip = clip;
+        crowdSwellAudioSource.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+        crowdSwellAudioSource.Play();
+    }
+    
     private IMessenger _messenger;
     private IDisposable _subscription;
     private IDisposable _subscription2;
@@ -45,6 +102,8 @@ public class LevelSceneHandler : MonoBehaviour
     private InputAction navigate;
     private InputAction click;
     private bool isDead = false;
+    private Random random = new Random();
+    private IHighScoreService highScoreService;
 
     private void ShowFinishedScreen()
     {
@@ -56,6 +115,13 @@ public class LevelSceneHandler : MonoBehaviour
         _finishedKilldText.text = totalKills + " kills";
         _finishedTimeText.text =
             ((int)timeElapsed.TotalMinutes).ToString("00") + ":" + timeElapsed.Seconds.ToString("00");
+
+        mainAudioSource.Stop();
+        mainAudioSource.clip = themeMusic;
+        mainAudioSource.volume = 0.6f;
+        mainAudioSource.Play();
+        
+        crowdAudioSource.volume = 0.3f;
         
         Time.timeScale = 0;
     }
@@ -90,15 +156,19 @@ public class LevelSceneHandler : MonoBehaviour
         _subscription2.Dispose();
     }
 
+    private float lastKillTime = 0;
     private void Start()
     {
         _messenger = Game.Container.Resolve<IMessenger>();
-
+        highScoreService = Game.Container.Resolve<IHighScoreService>();
         _subscription = _messenger.Subscribe<EnemyKilledMessage>((m) =>
         {
-            totalKills++;
             
-            // CROWD GOES WILD!!
+            totalKills++;
+
+            TryPlayRandomCrowCheer();
+            
+            lastKillTime = Time.time;
         });
         
         _subscription2 = _messenger.Subscribe<PlayerTookDamageMessage>((m) =>
