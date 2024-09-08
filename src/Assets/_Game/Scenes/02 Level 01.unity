@@ -2296,7 +2296,7 @@ MonoBehaviour:
   crowdSwellAudioSource: {fileID: 1078780663}
   crowdSwellAudioClips:
   - {fileID: 8300000, guid: d10e15e54cf8ed64096b64ebe549aa60, type: 3}
-  - {fileID: 8300000, guid: d2b52abfb597c1345a1c1cdbcc6329a9, type: 3}
+  - {fileID: 8300000, guid: 275e4958d2af640619988a70b27ac651, type: 3}
   mainAudioSource: {fileID: 1078780661}
   themeMusic: {fileID: 8300000, guid: b4251fe4735c8485ea13b41d4236005a, type: 3}
 --- !u!4 &1078780660
@@ -2324,7 +2324,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e3480a6335b824320b54eb808aa03d8c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 81ea3cd511117493dab18b75b1ed2936, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.6
   m_Pitch: 1
