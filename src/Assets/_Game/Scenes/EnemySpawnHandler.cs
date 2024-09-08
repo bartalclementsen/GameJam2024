@@ -48,8 +48,6 @@ public class EnemySpawnHandler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _logger.Log("_spawnCount:" + _spawnCount);
-        _logger.Log("_killCount:" + _killCount);
         if (DateTime.Now > _lastSpawnTime.AddSeconds(spawnRate) && (_spawnCount < _killCount + MaxEnemies))
         {
             SpawnRandomPipe();
