@@ -18,7 +18,10 @@ public class Enemy : MonoBehaviour
     
     [SerializeField]
     private AudioClip[] _damageSounds;
-    
+
+    [SerializeField]
+    private AudioClip[] _barSounds;
+
     [SerializeField]
     private AudioSource _audioSource;
     
@@ -64,6 +67,8 @@ public class Enemy : MonoBehaviour
             // Move the enemy towards the player
             _rb2D.MovePosition((Vector2)transform.position + direction * Speed * Time.deltaTime);
         }
+        
+        EnemyBarSounds();
     }
 
     public void TakeDamage(int num)
@@ -77,7 +82,12 @@ public class Enemy : MonoBehaviour
         _spriteRenderer_dead.enabled = true;
         
         _messenger.Publish(new EnemyKilledMessage(this));
-        PlayRandomDamageSound();
+        PlayRandomCharacterSound(_damageSounds);
+    }
+
+    public void EnemyBarSounds()
+    {
+        PlayRandomCharacterSound(_barSounds);
     }
 
     public void Undead()
@@ -89,14 +99,14 @@ public class Enemy : MonoBehaviour
         _spriteRenderer_dead.enabled = false;
     }
     
-    private void PlayRandomDamageSound()
+    private void PlayRandomCharacterSound(AudioClip[] _soundEffects)
     {
         if (_audioSource.isPlaying)
         {
             return;
         }
         
-        _audioSource.clip = _damageSounds[_random.Next(_damageSounds.Length)];
+        _audioSource.clip = _soundEffects[_random.Next(_soundEffects.Length)];
         _audioSource.Play();
         _audioSource.volume = 0.8f + (float)(0.2f * _random.NextDouble());
         _audioSource.volume = 0.8f + (float)(0.4f * _random.NextDouble());
