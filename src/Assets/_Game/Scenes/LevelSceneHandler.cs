@@ -1,4 +1,5 @@
 using System;
+using _Game;
 using Core.Mediators;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,28 @@ using UnityEngine.UI;
 public class LevelSceneHandler : MonoBehaviour
 {
     private bool isPaused = false;
+
+    public void SubmitHighScore()
+    {
+        string name = _highScoreNameField.text;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "Unknown";
+        }
+        
+        var timeElapsed = (DateTime.Now - _timeStart);
+        highScoreService.AddHighScore(name, totalKills, timeElapsed);
+        
+        _highScoreNameField.gameObject.SetActive(false);
+        _highScoreSubmitButton.SetActive(false);
+    }
+    
+    [SerializeField]
+    private TMP_InputField _highScoreNameField;
+    
+    
+    [SerializeField]
+    private GameObject _highScoreSubmitButton;
     
     [SerializeField]
     private TextMeshProUGUI _scoreText;
@@ -45,6 +68,7 @@ public class LevelSceneHandler : MonoBehaviour
     private InputAction navigate;
     private InputAction click;
     private bool isDead = false;
+    private IHighScoreService highScoreService;
 
     private void ShowFinishedScreen()
     {
@@ -93,7 +117,7 @@ public class LevelSceneHandler : MonoBehaviour
     private void Start()
     {
         _messenger = Game.Container.Resolve<IMessenger>();
-
+        highScoreService = Game.Container.Resolve<IHighScoreService>();
         _subscription = _messenger.Subscribe<EnemyKilledMessage>((m) =>
         {
             totalKills++;

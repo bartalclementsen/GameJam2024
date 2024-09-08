@@ -2,6 +2,7 @@ using Core.Containers;
 using Core.Loggers;
 using Core.Mediators;
 using System;
+using _Game;
 using UnityEngine;
 
 public class Game
@@ -32,6 +33,8 @@ public class Game
 
         containerBuilder.Register<ILoggerFactory, LoggerFactory>();
         containerBuilder.RegisterSingleton<IMessenger, Messenger>();
+        containerBuilder.RegisterSingleton<IStorageService, StorageService>();
+        containerBuilder.RegisterSingleton<IHighScoreService, HighScoreService>();
 
         Container = containerBuilder.Build();
     }
