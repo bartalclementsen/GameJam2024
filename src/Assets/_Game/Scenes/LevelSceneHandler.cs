@@ -267,6 +267,7 @@ public class LevelSceneHandler : MonoBehaviour
 
     private void UpdateDamageImage()
     {
+        /*
         if (_shouldShowImage)
         {
             RedFlashImage.enabled = true;
@@ -283,5 +284,6 @@ public class LevelSceneHandler : MonoBehaviour
                 RedFlashImage4.enabled = false;
             }
         }
+        */
     }
 }

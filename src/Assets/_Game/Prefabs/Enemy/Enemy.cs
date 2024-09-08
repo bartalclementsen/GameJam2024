@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
     private int pushStrength = 10;
     
     [SerializeField]
-    public int CurrentHitPonts { get; set; } = 2;
+    public int CurrentHitPonts { get; set; } = 1;
     
     public bool IsDead { get; set; } = false;
     
@@ -120,7 +120,7 @@ public class Enemy : MonoBehaviour
         Speed = 1000f + (float)(2000f * random.NextDouble());
         _rb2D.mass = 10f;
         transform.localScale = new Vector3(2f, 2f, 2f);
-        CurrentHitPonts = 4;
+        CurrentHitPonts = 2;
     }
 
     private void FixedUpdate()
