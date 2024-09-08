@@ -57,12 +57,6 @@ public class EnemySpawnHandler : MonoBehaviour
 
     private void SpawnRandomPipe()
     {
-        Enemy enemy = pipePrefab.GetComponent<Enemy>();
-        if (enemy.IsDead)
-        {
-            enemy.Undead();
-        }
-        
         for (int i = 0; i < _howManyEnemiesToSpawn; i++)
         {
             float spawnPosX = 0;
