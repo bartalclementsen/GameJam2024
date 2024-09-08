@@ -254,7 +254,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 10
   m_AngularDrag: 0.5
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -280,7 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c987cb063a93498a9f20c12b34d46b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 3
   StoppingDistance: 0
   _damageSounds:
   - {fileID: 8300000, guid: b1722316467b344aa800dd9780d8697b, type: 3}
@@ -289,6 +288,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dcdfd884a60ec42089b67715c5b88e9c, type: 3}
   - {fileID: 8300000, guid: fb5ba676ace20457fa2ead909c2db0a5, type: 3}
   _audioSource: {fileID: 3130239793437858801}
+  timeBeingPushed: 0.3
+  pushStrength: 30
 --- !u!82 &3130239793437858801
 AudioSource:
   m_ObjectHideFlags: 0

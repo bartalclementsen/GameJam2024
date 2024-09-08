@@ -22,7 +22,17 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private AudioSource _audioSource;
     
+    [SerializeField]
+    private float timeBeingPushed = 0.5f;
+    
+    [SerializeField]
+    private int pushStrength = 10;
+    
     public bool IsDead { get; set; } = false;
+    
+    private Vector2 _attackedFrom = Vector2.zero;
+    private DateTime _pushedTime = DateTime.Now;
+    private bool _isBeingPushed = false;
     
     private ILogger _logger;
     private GameObject _player;  // Reference to the player's position
@@ -57,24 +67,40 @@ public class Enemy : MonoBehaviour
         float distance = Vector2.Distance(transform.position, _player.transform.position);
 
         // Move toward the player if the distance is greater than the stoppingDistance
-        if (distance > StoppingDistance && IsDead == false)
+        if (distance > StoppingDistance && IsDead == false && _isBeingPushed == false)
         {
             Vector2 direction = (_player.transform.position - transform.position).normalized;
 
             // Move the enemy towards the player
             _rb2D.MovePosition((Vector2)transform.position + direction * Speed * Time.deltaTime);
         }
+
+        if (_isBeingPushed && DateTime.Now.AddSeconds(-timeBeingPushed) > _pushedTime)
+        {
+            _isBeingPushed = false;
+            _rb2D.velocity = Vector2.zero;
+        }
+
+        if (IsDead && _isBeingPushed == false)
+        {
+            _col.enabled = false;
+            _rb2D.bodyType = RigidbodyType2D.Static;
+            _spriteRenderer.enabled = false;
+            _spriteRenderer_dead.enabled = true;
+        }
     }
 
-    public void TakeDamage(int num)
+    public void TakeDamage(Vector2 playerPosition)
     {
         if (IsDead) return;
         
         IsDead = true;
-        _col.enabled = false;
-        _rb2D.bodyType = RigidbodyType2D.Static;
-        _spriteRenderer.enabled = false;
-        _spriteRenderer_dead.enabled = true;
+        
+        Vector2 direction = ((Vector2)transform.position - playerPosition).normalized;
+        _rb2D.velocity = direction * pushStrength;
+
+        _pushedTime = DateTime.Now;
+        _isBeingPushed = true;
         
         _messenger.Publish(new EnemyKilledMessage(this));
         PlayRandomDamageSound();

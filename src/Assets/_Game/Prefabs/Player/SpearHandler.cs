@@ -38,7 +38,7 @@ public class SpearHandler : MonoBehaviour
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.TakeDamage(10);
+                enemy.TakeDamage(transform.position);
             }
         }
     }

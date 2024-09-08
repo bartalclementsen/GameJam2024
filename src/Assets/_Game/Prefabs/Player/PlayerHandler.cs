@@ -161,6 +161,7 @@ public class PlayerScript : MonoBehaviour
         {
             Vector2 direction = ((Vector2)transform.position - _attackedFrom).normalized;
             rb.velocity = direction * pushStrength;
+            rb.mass = 100;
 
             _pushedTime = DateTime.Now;
             _isBeingPushed = true;
