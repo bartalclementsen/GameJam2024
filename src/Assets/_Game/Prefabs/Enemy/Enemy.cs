@@ -102,8 +102,20 @@ public class Enemy : MonoBehaviour
         _col = GetComponent<Collider2D>();
         _spriteRenderer = GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(sr => sr.enabled);
         _spriteRenderer_dead = GetComponentsInChildren<SpriteRenderer>().FirstOrDefault(sr => sr.enabled == false);
+
+        if (random.Next(10) == 0)
+        {
+            MakeBig();
+        }
     }
-    
+
+    private void MakeBig()
+    {
+        Speed = 1000f + (float)(2000f * random.NextDouble());
+        _rb2D.mass = 10f;
+        transform.localScale = new Vector3(2f, 2f, 2f);
+    }
+
     private void FixedUpdate()
     {
         if (_topTextShown && (Time.time - _topTextShownOn) > 1.5f)
@@ -146,7 +158,7 @@ public class Enemy : MonoBehaviour
         IsDead = true;
         
         Vector2 direction = ((Vector2)transform.position - playerPosition).normalized;
-        _rb2D.AddForce(direction * pushStrength);
+        _rb2D.AddForce(direction * pushStrength * _rb2D.mass);
         
         _pushedTime = DateTime.Now;
         _isBeingPushed = true;

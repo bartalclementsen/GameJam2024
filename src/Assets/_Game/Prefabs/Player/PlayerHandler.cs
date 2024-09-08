@@ -39,7 +39,8 @@ public class PlayerScript : MonoBehaviour
     
     [SerializeField] private AudioSource _weaponAudioSource;
     
-    public int CurrentHitPonts { get; set; } = 5;
+    [SerializeField]
+    public int CurrentHitPonts { get; set; } = 10;
 
     private Random _random = new Random();
     private ILogger _logger;
@@ -54,6 +55,7 @@ public class PlayerScript : MonoBehaviour
     private bool isInDanger = false;
     private Vector2 _attackedFrom = Vector2.zero;
     private DateTime _pushedTime = DateTime.Now;
+    private Camera _camera;
     
     private bool _isBeingPushed = false;
     private IMessenger _messenger;
@@ -72,7 +74,7 @@ public class PlayerScript : MonoBehaviour
         move.Enable();
         fire.Enable();
         look.Enable();
-
+        
         fire.performed += Fire;
     }
 

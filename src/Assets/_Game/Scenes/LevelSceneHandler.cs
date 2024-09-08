@@ -73,6 +73,18 @@ public class LevelSceneHandler : MonoBehaviour
     
     [SerializeField]
     private AudioClip themeMusic;
+    
+    [SerializeField]
+    private Image RedFlashImage;
+    
+    [SerializeField]
+    private Image RedFlashImage2;
+    
+    [SerializeField]
+    private Image RedFlashImage3;
+    
+    [SerializeField]
+    private Image RedFlashImage4;
 
     private void TryPlayRandomCrowCheer()
     {
@@ -104,6 +116,8 @@ public class LevelSceneHandler : MonoBehaviour
     private bool isDead = false;
     private Random random = new Random();
     private IHighScoreService highScoreService;
+    private bool _shouldShowImage;
+    private DateTime _sinceShowedImage;
 
     private void ShowFinishedScreen()
     {
@@ -173,7 +187,11 @@ public class LevelSceneHandler : MonoBehaviour
         
         _subscription2 = _messenger.Subscribe<PlayerTookDamageMessage>((m) =>
         {
-            _hitPointsText.text = "HP " + Math.Max(0, m.PlayerHandler.CurrentHitPonts) + "/" + 5;
+            _hitPointsText.text = "HP " + Math.Max(0, m.PlayerHandler.CurrentHitPonts) + "/" + 10;
+
+            _shouldShowImage = true;
+            _sinceShowedImage = DateTime.Now;
+            
             if (m.PlayerHandler.CurrentHitPonts < 1)
             {
                 isDead = true;
@@ -235,7 +253,9 @@ public class LevelSceneHandler : MonoBehaviour
     {
         if (isDead == false)
         {
-            UpdateScoreText();    
+            UpdateScoreText();
+
+            UpdateDamageImage();
         }
     }
 
@@ -243,5 +263,25 @@ public class LevelSceneHandler : MonoBehaviour
     {
         var timeElapsed = (DateTime.Now - _timeStart);
         _scoreText.text = "Kills " + totalKills.ToString("00") + Environment.NewLine + "Time " + ((int)timeElapsed.TotalMinutes).ToString("00") + ":" + timeElapsed.Seconds.ToString("00");
+    }
+
+    private void UpdateDamageImage()
+    {
+        if (_shouldShowImage)
+        {
+            RedFlashImage.enabled = true;
+            RedFlashImage2.enabled = true;
+            RedFlashImage3.enabled = true;
+            RedFlashImage4.enabled = true;
+
+            if (_sinceShowedImage.AddSeconds(1) < DateTime.Now)
+            {
+                _shouldShowImage = false;
+                RedFlashImage.enabled = false;
+                RedFlashImage2.enabled = false;
+                RedFlashImage3.enabled = false;
+                RedFlashImage4.enabled = false;
+            }
+        }
     }
 }
