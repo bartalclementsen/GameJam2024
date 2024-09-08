@@ -24,6 +24,9 @@ public class Enemy : MonoBehaviour
 
     [SerializeField]
     private AudioSource _audioSource;
+
+    [SerializeField]
+    private GameObject _enemyText;
     
     public bool IsDead { get; set; } = false;
     
@@ -44,6 +47,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         Speed = 1f + (float)(4f * random.NextDouble());
+
+        _enemyText.SetActive(false);
         
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
@@ -101,9 +106,10 @@ public class Enemy : MonoBehaviour
             int chance = _random.Next(0, 100);
         
             // 0.5% chance to play the bar sound
-            if (chance < 0.5)
+            if (chance < 0.5);
             {
                 PlayRandomCharacterSound(_barSounds);
+                DisplayBarText();
                 _barSoundTimer = _barSoundCooldown;  // Reset the cooldown timer
             }
         }
@@ -129,5 +135,17 @@ public class Enemy : MonoBehaviour
         _audioSource.Play();
         _audioSource.volume = 0.8f + (float)(0.2f * _random.NextDouble());
         _audioSource.volume = 0.8f + (float)(0.4f * _random.NextDouble());
+    }
+
+    private void DisplayBarText()
+    {
+        _enemyText.SetActive(true);
+        StartCoroutine(DelayBarSound());
+    }
+
+    private IEnumerator DelayBarSound()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _enemyText.SetActive(false);
     }
 }
