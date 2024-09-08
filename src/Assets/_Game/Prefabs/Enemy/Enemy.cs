@@ -74,6 +74,7 @@ public class Enemy : MonoBehaviour
         string barText = _barText[index];
         _barAudioSource.PlayOneShot(bar);
         _barAudioSource.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+        _barAudioSource.volume = UnityEngine.Random.Range(0.6f, 1.0f);
         _nextBarIn = Time.time + UnityEngine.Random.Range(10.0f, 20.0f);
 
         _topText.text = barText;
