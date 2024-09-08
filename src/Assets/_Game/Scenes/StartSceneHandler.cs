@@ -34,7 +34,7 @@ public class StartSceneHandler : MonoBehaviour
     
     private void Start()
     {
-        _versionText.text = $"Brynleif, Eirikur, Ørvur og Bartal - Gladius V{Application.version}";
+        _versionText.text = $"Brynleif, Eirikur, Ørvur & Bartal - Gladius V{Application.version}";
         _highScoreService = Game.Container.Resolve<IHighScoreService>();
     }
 
