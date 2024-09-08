@@ -2282,8 +2282,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c584c83bd500747c282c64fabcfe2b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _highScoreNameField: {fileID: 0}
-  _highScoreSubmitButton: {fileID: 0}
+  _highScoreNameField: {fileID: 1797078525}
+  _highScoreSubmitButton: {fileID: 250750171}
   _scoreText: {fileID: 1321619418}
   _hitPointsText: {fileID: 1309324417}
   _finishedMenu: {fileID: 81841601}
@@ -2292,11 +2292,14 @@ MonoBehaviour:
   retryButton: {fileID: 493813759}
   eventSystem: {fileID: 699801921}
   pauseMenuUI: {fileID: 1291234505}
-  crowdAudioSource: {fileID: 0}
-  crowdSwellAudioSource: {fileID: 0}
-  crowdSwellAudioClips: []
-  mainAudioSource: {fileID: 0}
-  themeMusic: {fileID: 0}
+  crowdAudioSource: {fileID: 1078780664}
+  crowdSwellAudioSource: {fileID: 1078780663}
+  crowdSwellAudioClips:
+  - {fileID: 8300000, guid: d10e15e54cf8ed64096b64ebe549aa60, type: 3}
+  - {fileID: 8300000, guid: 599c6ec8b0b47455fae120fd6975531d, type: 3}
+  - {fileID: 8300000, guid: c6f7fdcd18aca76468ff2bd1e623a643, type: 3}
+  mainAudioSource: {fileID: 1078780661}
+  themeMusic: {fileID: 8300000, guid: a580983e3ed1546d990367407a1a4348, type: 3}
 --- !u!4 &1078780660
 Transform:
   m_ObjectHideFlags: 0
@@ -2324,7 +2327,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 81ea3cd511117493dab18b75b1ed2936, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.6
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2445,7 +2448,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 120
+  Priority: 110
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500

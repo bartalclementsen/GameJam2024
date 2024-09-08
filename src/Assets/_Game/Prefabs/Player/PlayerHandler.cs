@@ -131,7 +131,7 @@ public class PlayerScript : MonoBehaviour
 
     private void Fire(InputAction.CallbackContext context)
     {
-        if (isAttacking)
+        if (isAttacking || Time.timeScale == 0)
         {
             return;
         }
