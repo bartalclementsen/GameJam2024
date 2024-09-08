@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Loggers;
 using Core.Mediators;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,6 +19,19 @@ public class Enemy : MonoBehaviour
     
     [SerializeField]
     private AudioClip[] _damageSounds;
+    
+    [SerializeField]
+    private TextMeshPro _topText;
+
+    
+    [SerializeField]
+    private AudioSource _barAudioSource;
+    
+    [SerializeField]
+    private AudioClip[] _barAudioClips;
+    
+    [SerializeField]
+    private string[] _barText;
     
     [SerializeField]
     private AudioSource _audioSource;
@@ -48,7 +62,37 @@ public class Enemy : MonoBehaviour
     private IMessenger _messenger;
 
     private Random _random = new Random();
-    
+
+    private float _lastBarTime;
+    private float _nextBarIn = 0;
+    private float _topTextShownOn = 0;
+    private bool _topTextShown = false;
+    private void TryPlayBarSound()
+    {
+        if (_barAudioSource.isPlaying || Time.time - _lastBarTime < _nextBarIn)
+        {
+            return;
+        }
+
+        int index = _random.Next(_barAudioClips.Length);
+        AudioClip bar = _barAudioClips[index];
+        string barText = _barText[index];
+        _barAudioSource.PlayOneShot(bar);
+        _barAudioSource.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+        _barAudioSource.volume = UnityEngine.Random.Range(0.6f, 1.0f);
+        _nextBarIn = Time.time + UnityEngine.Random.Range(10.0f, 20.0f);
+
+        _topText.text = barText;
+        _topText.gameObject.SetActive(true);
+        _topTextShownOn = Time.time;
+        _topTextShown = true;
+    }
+
+    private void Awake()
+    {
+        _nextBarIn = Time.time + UnityEngine.Random.Range(10.0f, 20.0f);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,6 +125,13 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_topTextShown && (Time.time - _topTextShownOn) > 1.5f)
+        {
+            _topTextShown = false;
+            _topText.gameObject.SetActive(false);
+        }
+        TryPlayBarSound();
+        
         // Calculate the distance to the player
         float distance = Vector2.Distance(transform.position, _player.transform.position);
 
