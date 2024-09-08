@@ -12,7 +12,8 @@ using Random = System.Random;
 
 public class Enemy : MonoBehaviour
 {
-    private float Speed = new Random().Next(3, 6);  // Enemy's movement speed
+    private Random random = new Random();
+    private float Speed = 2f;
     public float StoppingDistance = 0f; // Minimum distance to stop near the player
     
     [SerializeField]
@@ -36,6 +37,8 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Speed = 1f + (float)(4f * random.NextDouble());
+        
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
         
