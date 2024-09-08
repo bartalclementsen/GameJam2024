@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Speed = 1f + (float)(4f * random.NextDouble());
+        Speed = 1f + (float)(400f * random.NextDouble());
         
         ILoggerFactory factory = Game.Container.Resolve<ILoggerFactory>();
         _logger = factory.Create(this);
@@ -72,13 +72,12 @@ public class Enemy : MonoBehaviour
             Vector2 direction = (_player.transform.position - transform.position).normalized;
 
             // Move the enemy towards the player
-            _rb2D.MovePosition((Vector2)transform.position + direction * Speed * Time.deltaTime);
+            _rb2D.AddForce(direction * Speed * Time.deltaTime);
         }
-
+        
         if (_isBeingPushed && DateTime.Now.AddSeconds(-timeBeingPushed) > _pushedTime)
         {
             _isBeingPushed = false;
-            _rb2D.velocity = Vector2.zero;
         }
 
         if (IsDead && _isBeingPushed == false)
@@ -97,8 +96,8 @@ public class Enemy : MonoBehaviour
         IsDead = true;
         
         Vector2 direction = ((Vector2)transform.position - playerPosition).normalized;
-        _rb2D.velocity = direction * pushStrength;
-
+        _rb2D.AddForce(direction * pushStrength);
+        
         _pushedTime = DateTime.Now;
         _isBeingPushed = true;
         

@@ -254,7 +254,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 10
+  m_LinearDrag: 1
   m_AngularDrag: 0.5
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -289,7 +289,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: fb5ba676ace20457fa2ead909c2db0a5, type: 3}
   _audioSource: {fileID: 3130239793437858801}
   timeBeingPushed: 0.3
-  pushStrength: 30
+  pushStrength: 750
 --- !u!82 &3130239793437858801
 AudioSource:
   m_ObjectHideFlags: 0
